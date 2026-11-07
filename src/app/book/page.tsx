@@ -4,7 +4,10 @@ import Image from 'next/image';
 import { Footer } from '@/components/Footer';
 import { JsonLd } from '@/components/JsonLd';
 import { Nav } from '@/components/Nav';
+import { PageHero } from '@/components/PageHero';
 import { getRooms } from '@/lib/data';
+import { photos } from '@/lib/photos';
+import { siteConfig } from '@/lib/site';
 import { breadcrumbJsonLd, pageMetadata } from '@/lib/seo';
 import { urlFor } from '@/sanity/image';
 
@@ -16,7 +19,7 @@ export const metadata = pageMetadata({
 export const revalidate = 60;
 
 export default async function BookPage() {
-  const rooms = await getRooms();
+  const rooms = await getRooms().catch(() => []);
 
   return (
     <>
@@ -28,21 +31,23 @@ export default async function BookPage() {
       />
       <Nav solid />
 
-      <main id="main" className="pt-20">
-        <header className="text-center px-4 py-12 sm:py-16">
-          <h1 className="text-3xl sm:text-4xl font-bold text-stone-800">
-            Prenota il tuo soggiorno
-          </h1>
-          <p className="text-stone-500 mt-3 text-lg max-w-xl mx-auto">
-            Scegli la camera e verifica la disponibilità.
-            Prenotando direttamente risparmi il 5%.
-          </p>
-        </header>
+      <main id="main">
+        <PageHero
+          eyebrow="Prenota diretto"
+          title={<>Prenota il tuo <em>soggiorno.</em></>}
+          intro="Scegli l’appartamento e verifica la disponibilità. Prenotando direttamente risparmi il 5%."
+          image={photos.welcome.src}
+          alt={photos.welcome.alt}
+        />
 
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 pb-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-16">
           {rooms.length === 0 && (
             <p className="text-center text-stone-500">
-              Le camere saranno disponibili presto. Torna a trovarci!
+              Le date online saranno disponibili presto. Nel frattempo scrivici a{' '}
+              <a className="text-green-700 underline underline-offset-4" href={`mailto:${siteConfig.author.email}`}>
+                {siteConfig.author.email}
+              </a>
+              .
             </p>
           )}
 
@@ -53,17 +58,15 @@ export default async function BookPage() {
                 href={`/rooms/${room.slug.current}`}
                 className="group rounded-xl overflow-hidden border border-stone-200 hover:shadow-lg transition-shadow bg-white"
               >
-                {room.mainImage && (
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <Image
-                      src={urlFor(room.mainImage).width(600).height(375).url()}
-                      alt={room.name}
+                      src={room.mainImage ? urlFor(room.mainImage).width(600).height(375).url() : photos.bedroom.src}
+                      alt={room.mainImage ? room.name : photos.bedroom.alt}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                       sizes="(max-width: 640px) 100vw, 50vw"
                     />
                   </div>
-                )}
                 <div className="p-5">
                   <h2 className="text-lg font-semibold text-stone-800 group-hover:text-green-700 transition-colors">
                     {room.name}

@@ -7,102 +7,75 @@ import { useState } from 'react';
 import { Logo } from './Logo';
 import { navLinks, ctaLink } from '@/lib/site';
 
+/**
+ * Sticky white header. `solid` is kept for API compatibility with inner pages;
+ * the Luce design uses the same solid header everywhere.
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function Nav({ solid = false }: { solid?: boolean }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
+  const isActive = (href: string) =>
+    pathname === href || pathname.startsWith(`${href}/`);
+
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-colors ${
-        solid ? 'villa-nav nav-solid' : 'villa-nav nav-over-hero'
-      }`}
-      aria-label="Primary"
-    >
-      <div className="mx-auto max-w-6xl flex items-center justify-between px-4 py-3 sm:px-6">
-        <Link href="/" className="text-lg font-semibold tracking-wide">
+    <header className="site-header">
+      <div className="site-header-inner">
+        <Link href="/" aria-label="Villa Casa Mia, home">
           <Logo compact />
         </Link>
 
-        {/* Desktop links */}
-        <div className="hidden md:flex items-center gap-6">
-          {navLinks.map((link) => {
-            const active =
-              pathname === link.href || pathname.startsWith(`${link.href}/`);
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`text-sm transition-colors hover:text-green-700 ${
-                  active ? 'text-green-700 font-medium' : 'text-stone-600'
-                }`}
-                aria-current={active ? 'page' : undefined}
-              >
-                {link.label}
-              </Link>
-            );
-          })}
-          <Link
-            href={ctaLink.href}
-            className="rounded-lg bg-green-700 text-white text-sm font-medium px-4 py-2 hover:bg-green-800 transition-colors"
-          >
-            {ctaLink.label}
-          </Link>
-        </div>
+        <nav aria-label="Principale" className="site-nav">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              aria-current={isActive(link.href) ? 'page' : undefined}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
 
-        {/* Mobile burger */}
+        <Link href={ctaLink.href} className="button header-cta">
+          {ctaLink.label}
+        </Link>
+
         <button
           type="button"
-          className="md:hidden flex flex-col gap-1 p-2"
+          className="menu-toggle"
           aria-expanded={open}
           aria-controls="nav-mobile"
           aria-label="Menu"
           onClick={() => setOpen((v) => !v)}
         >
-          <span
-            className={`block w-5 h-0.5 bg-stone-700 transition-transform ${
-              open ? 'translate-y-1.5 rotate-45' : ''
-            }`}
-          />
-          <span
-            className={`block w-5 h-0.5 bg-stone-700 transition-opacity ${
-              open ? 'opacity-0' : ''
-            }`}
-          />
-          <span
-            className={`block w-5 h-0.5 bg-stone-700 transition-transform ${
-              open ? '-translate-y-1.5 -rotate-45' : ''
-            }`}
-          />
+          <span />
+          <span />
+          <span />
         </button>
       </div>
 
-      {/* Mobile menu */}
-      {open && (
-        <div
-          id="nav-mobile"
-          className="md:hidden bg-white border-t border-stone-100 shadow-lg"
-        >
-          <div className="flex flex-col px-4 py-3 gap-3">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-sm text-stone-600 hover:text-green-700 py-1"
-                onClick={() => setOpen(false)}
-              >
-                {link.label}
-              </Link>
-            ))}
-            <Link
-              href={ctaLink.href}
-              className="rounded-lg bg-green-700 text-white text-sm font-medium px-4 py-2 text-center hover:bg-green-800 transition-colors"
-              onClick={() => setOpen(false)}
-            >
-              {ctaLink.label}
-            </Link>
-          </div>
-        </div>
-      )}
-    </nav>
+      <nav
+        id="nav-mobile"
+        aria-label="Menu mobile"
+        className="mobile-menu"
+        data-open={open}
+      >
+        {navLinks.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            aria-current={isActive(link.href) ? 'page' : undefined}
+            onClick={() => setOpen(false)}
+          >
+            {link.label}
+          </Link>
+        ))}
+        <Link href={ctaLink.href} className="button" onClick={() => setOpen(false)}>
+          {ctaLink.label}
+        </Link>
+      </nav>
+    </header>
   );
 }

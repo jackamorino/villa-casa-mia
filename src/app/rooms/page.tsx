@@ -4,7 +4,10 @@ import Link from 'next/link';
 import { Footer } from '@/components/Footer';
 import { JsonLd } from '@/components/JsonLd';
 import { Nav } from '@/components/Nav';
+import { PageHero } from '@/components/PageHero';
+import { PhotoGallery } from '@/components/PhotoGallery';
 import { getRooms } from '@/lib/data';
+import { photos } from '@/lib/photos';
 import { breadcrumbJsonLd, pageMetadata } from '@/lib/seo';
 import { urlFor } from '@/sanity/image';
 
@@ -15,8 +18,10 @@ export const metadata = pageMetadata({
 });
 export const revalidate = 60;
 
+const roomFallbackPhotos = [photos.bedroom, photos.living];
+
 export default async function RoomsPage() {
-  const rooms = await getRooms();
+  const rooms = await getRooms().catch(() => []);
 
   return (
     <>
@@ -28,61 +33,90 @@ export default async function RoomsPage() {
       />
       <Nav solid />
 
-      <main id="main" className="pt-20">
-        <header className="text-center px-4 py-12 sm:py-16">
-          <h1 className="text-3xl sm:text-4xl font-bold text-stone-800">I nostri appartamenti</h1>
-          <p className="text-stone-500 mt-3 text-lg max-w-xl mx-auto">
-            Due appartamenti immerse tra gli ulivi, con vista sui Colli Euganei.
-          </p>
-        </header>
+      <main id="main">
+        <PageHero
+          eyebrow="Gli appartamenti"
+          title={<>Spazio per <em>stare bene.</em></>}
+          intro="Travi in larice, muri in pietra a vista e una cucina completa, ai piedi del borgo di Arquà Petrarca."
+          image={photos.living.src}
+          alt={photos.living.alt}
+        />
 
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-16 grid grid-cols-1 md:grid-cols-2 gap-8">
-          {rooms.map((room) => (
-            <Link
-              key={room._id}
-              href={`/rooms/${room.slug.current}`}
-              className="group rounded-xl overflow-hidden border border-stone-200 hover:shadow-lg transition-shadow bg-white"
-            >
-              {room.mainImage && (
-                <div className="relative aspect-[16/10] overflow-hidden">
-                  <Image
-                    src={urlFor(room.mainImage).width(700).height(438).url()}
-                    alt={room.name}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                  />
+        <section className="page-section wrap" aria-label="Elenco appartamenti">
+          <div className="room-grid">
+            {rooms.length > 0 ? (
+              rooms.map((room, i) => {
+                const fallback = roomFallbackPhotos[i % roomFallbackPhotos.length];
+                return (
+                  <Link
+                    key={room._id}
+                    href={`/rooms/${room.slug.current}`}
+                    className={rooms.length === 1 ? 'room-card room-card-wide' : 'room-card'}
+                  >
+                    <div className="room-image">
+                      <Image
+                        src={room.mainImage ? urlFor(room.mainImage).width(1000).height(1250).url() : fallback.src}
+                        alt={room.mainImage ? room.name : fallback.alt}
+                        fill
+                        sizes="(max-width: 760px) 100vw, 50vw"
+                      />
+                    </div>
+                    <div className="room-meta">
+                      <div>
+                        <h2>{room.name}</h2>
+                        <p>
+                          {room.tagline ? `${room.tagline} · ` : ''}max {room.maxGuests} ospiti · min{' '}
+                          {room.minNights} notti
+                        </p>
+                        {room.amenities && room.amenities.length > 0 && (
+                          <ul className="room-amenities">
+                            {room.amenities.slice(0, 5).map((a) => (
+                              <li key={a}>{a}</li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                      <span className="room-price">da €{room.pricePerNight} / notte</span>
+                    </div>
+                  </Link>
+                );
+              })
+            ) : (
+              <Link className="room-card room-card-wide" href="/book">
+                <div className="room-image">
+                  <Image src={photos.bedroom.src} alt={photos.bedroom.alt} fill sizes="(max-width: 760px) 100vw, 50vw" />
                 </div>
-              )}
-              <div className="p-6">
-                <h2 className="text-xl font-semibold text-stone-800 group-hover:text-green-700 transition-colors">
-                  {room.name}
-                </h2>
-                {room.tagline && (
-                  <p className="text-stone-500 mt-1">{room.tagline}</p>
-                )}
-                <div className="flex items-center justify-between mt-4">
-                  <span className="text-green-700 font-semibold text-lg">
-                    &euro;{room.pricePerNight}
-                    <span className="text-sm text-stone-400 font-normal"> / notte</span>
-                  </span>
-                  <span className="text-sm text-stone-400">
-                    max {room.maxGuests} ospiti &middot; min {room.minNights} notti
-                  </span>
-                </div>
-                {room.amenities && room.amenities.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-3">
-                    {room.amenities.slice(0, 5).map((a) => (
-                      <span key={a} className="text-xs bg-stone-100 text-stone-600 rounded-full px-3 py-1">
-                        {a}
-                      </span>
-                    ))}
+                <div className="room-meta">
+                  <div>
+                    <h2>Primo Piano</h2>
+                    <p>3 ospiti · 1 camera · letto king + divano letto · 1 bagno</p>
+                    <ul className="room-amenities">
+                      <li>Cucina completa</li>
+                      <li>Aria condizionata</li>
+                      <li>Wifi</li>
+                      <li>Lavatrice e asciugatrice</li>
+                    </ul>
                   </div>
-                )}
-              </div>
-            </Link>
-          ))}
-        </div>
+                  <span className="room-price">Verifica le date</span>
+                </div>
+              </Link>
+            )}
+          </div>
+        </section>
+
+        <section className="page-section page-section-tint" aria-labelledby="tour-title">
+          <div className="wrap">
+            <div className="section-heading">
+              <h2 id="tour-title">
+                La casa, <em>stanza per stanza.</em>
+              </h2>
+            </div>
+            <PhotoGallery
+              label="Foto dell'appartamento"
+              items={[photos.bedroom, photos.dining, photos.kitchen, photos.bath]}
+            />
+          </div>
+        </section>
       </main>
 
       <Footer />

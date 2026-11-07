@@ -1,6 +1,11 @@
+import Image from 'next/image';
+import Link from 'next/link';
+
 import { Footer } from '@/components/Footer';
 import { JsonLd } from '@/components/JsonLd';
 import { Nav } from '@/components/Nav';
+import { PageHero } from '@/components/PageHero';
+import { photos } from '@/lib/photos';
 import { breadcrumbJsonLd, pageMetadata } from '@/lib/seo';
 
 export const metadata = pageMetadata({
@@ -20,42 +25,68 @@ export default function StoryPage() {
       />
       <Nav solid />
 
-      <main id="main" className="pt-20">
-        <header className="text-center px-4 py-12 sm:py-16 max-w-3xl mx-auto">
-          <h1 className="text-3xl sm:text-4xl font-bold text-stone-800">
-            La storia di Casa Mia
-          </h1>
-          <p className="text-stone-500 mt-4 text-lg leading-relaxed">
-            Come una villa dimenticata tra gli ulivi dei Colli Euganei è diventata
-            la nostra casa — e la vostra.
-          </p>
-        </header>
+      <main id="main">
+        <PageHero
+          eyebrow="La nostra storia"
+          title={<>La storia di <em>Casa Mia.</em></>}
+          intro="Come una villa dimenticata tra gli ulivi dei Colli Euganei è diventata la nostra casa, e la vostra."
+          image={photos.terrace.src}
+          alt={photos.terrace.alt}
+        />
 
-        <article className="max-w-3xl mx-auto px-4 sm:px-6 pb-16 prose prose-stone">
-          {/*
-            This is a placeholder. The actual story content will come from Sanity CMS.
-            For now, we show a static teaser. Once Sanity is set up, this page
-            will fetch content from a "story" document type or from blog posts
-            tagged with the "villa-story" category.
-          */}
-          <p>
-            Villa Casa Mia sorge nel cuore dei Colli Euganei, ad Arquà Petrarca —
-            uno dei borghi più belli d&apos;Italia. La nostra avventura è iniziata
-            quando abbiamo trovato questa villa in stato di abbandono e abbiamo
-            deciso di restituirle la vita che meritava.
-          </p>
-          <p>
-            Ogni pietra racconta una storia. Ogni ulivo nel giardino è testimone
-            di secoli di storia. La ristrutturazione ha preservato l&apos;anima
-            della casa, integrando comfort moderni con il rispetto per la
-            tradizione.
-          </p>
-          <p>
-            Seguici sul <a href="/blog" className="text-green-700 hover:text-green-800">blog</a> per
-            scoprire il diario della costruzione, le scoperte fatte durante i lavori
-            e i segreti di questa terra meravigliosa.
-          </p>
-        </article>
+        {/*
+          Placeholder copy. The full story will come from Sanity (a "story"
+          document or blog posts tagged "villa-story").
+        */}
+        <section className="page-section wrap">
+          <div className="story-grid">
+            <figure className="story-figure">
+              <Image src={photos.dining.src} alt={photos.dining.alt} fill sizes="(max-width: 900px) 100vw, 50vw" />
+            </figure>
+            <div className="prose-luce">
+              <div className="rule" />
+              <h2>
+                Una villa da <em>far rinascere.</em>
+              </h2>
+              <p>
+                Villa Casa Mia sorge nel cuore dei Colli Euganei, ad Arquà Petrarca, uno dei borghi
+                più belli d’Italia. La nostra avventura è iniziata quando abbiamo trovato questa villa
+                in stato di abbandono e abbiamo deciso di restituirle la vita che meritava.
+              </p>
+            </div>
+          </div>
+
+          <div className="story-grid">
+            <div className="prose-luce">
+              <div className="rule" />
+              <h2>
+                Ogni pietra <em>racconta.</em>
+              </h2>
+              <p>
+                Ogni ulivo nel giardino è testimone di secoli di storia. La ristrutturazione ha
+                preservato l’anima della casa, integrando comfort moderni con il rispetto per la
+                tradizione.
+              </p>
+              <p>
+                Seguici sul <Link href="/blog">blog</Link> per scoprire il diario della costruzione, le
+                scoperte fatte durante i lavori e i segreti di questa terra.
+              </p>
+            </div>
+            <figure className="story-figure">
+              <Image src={photos.garden.src} alt={photos.garden.alt} fill sizes="(max-width: 900px) 100vw, 50vw" />
+            </figure>
+          </div>
+        </section>
+
+        <section className="luce-closing wrap">
+          <p className="eyebrow">Ci vediamo ad Arquà</p>
+          <h2>
+            Vieni a vedere <em>com’è oggi.</em>
+          </h2>
+          <Link className="button" href="/rooms">
+            Gli appartamenti
+          </Link>
+        </section>
       </main>
 
       <Footer />

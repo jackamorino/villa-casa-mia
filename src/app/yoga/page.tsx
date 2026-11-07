@@ -3,6 +3,8 @@ import Image from 'next/image';
 import { Footer } from '@/components/Footer';
 import { JsonLd } from '@/components/JsonLd';
 import { Nav } from '@/components/Nav';
+import { PageHero } from '@/components/PageHero';
+import { photos } from '@/lib/photos';
 import { PortableTextRenderer } from '@/components/PortableText';
 import { getYogaStudio } from '@/lib/data';
 import { breadcrumbJsonLd, pageMetadata } from '@/lib/seo';
@@ -16,7 +18,7 @@ export const metadata = pageMetadata({
 export const revalidate = 60;
 
 export default async function YogaPage() {
-  const studio = await getYogaStudio();
+  const studio = await getYogaStudio().catch(() => null);
 
   return (
     <>
@@ -28,28 +30,24 @@ export default async function YogaPage() {
       />
       <Nav solid />
 
-      <main id="main" className="pt-20">
-        <header className="text-center px-4 py-12 sm:py-16">
-          <h1 className="text-3xl sm:text-4xl font-bold text-stone-800">
-            {studio?.title || 'Yoga Studio'}
-          </h1>
-          <p className="text-stone-500 mt-3 text-lg max-w-xl mx-auto">
-            Pratica yoga immersa nella pace dei Colli Euganei.
-          </p>
-        </header>
+      <main id="main">
+        <PageHero
+          eyebrow="Un tempo per te"
+          title={
+            studio?.title ? (
+              studio.title
+            ) : (
+              <>
+                Respira. <em>Sei nel posto giusto.</em>
+              </>
+            )
+          }
+          intro="Pratica yoga immersa nella pace dei Colli Euganei."
+          image={studio?.mainImage ? urlFor(studio.mainImage).width(1200).height(1500).url() : photos.garden.src}
+          alt={studio?.mainImage ? studio.title || 'Lo studio yoga' : photos.garden.alt}
+        />
 
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-16">
-          {studio?.mainImage && (
-            <div className="relative aspect-[21/9] max-h-[400px] rounded-xl overflow-hidden mb-10">
-              <Image
-                src={urlFor(studio.mainImage).width(1400).height(600).url()}
-                alt={studio.title || 'Yoga Studio'}
-                fill
-                className="object-cover"
-                sizes="100vw"
-              />
-            </div>
-          )}
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16">
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
             {/* Description */}
