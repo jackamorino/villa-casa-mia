@@ -9,9 +9,9 @@ import { breadcrumbJsonLd, pageMetadata } from '@/lib/seo';
 import { urlFor } from '@/sanity/image';
 
 export const metadata = pageMetadata({
-  title: 'Le Camere',
+  title: 'Gli Appartamenti',
   path: '/rooms',
-  description: 'Le camere di Villa Casa Mia ad Arquà Petrarca: comfort, vista sui Colli Euganei e prenotazione diretta con sconto.',
+  description: 'Gli appartamenti di Villa Casa Mia ad Arquà Petrarca: comfort, vista sui Colli Euganei e prenotazione diretta con sconto.',
 });
 export const revalidate = 60;
 
@@ -23,16 +23,16 @@ export default async function RoomsPage() {
       <JsonLd
         data={breadcrumbJsonLd([
           { name: 'Home', path: '/' },
-          { name: 'Camere', path: '/rooms' },
+          { name: 'Appartamenti', path: '/rooms' },
         ])}
       />
       <Nav solid />
 
       <main id="main" className="pt-20">
         <header className="text-center px-4 py-12 sm:py-16">
-          <h1 className="text-3xl sm:text-4xl font-bold text-stone-800">Le nostre camere</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold text-stone-800">I nostri appartamenti</h1>
           <p className="text-stone-500 mt-3 text-lg max-w-xl mx-auto">
-            Due camere esclusive immerse tra gli ulivi, con vista sui Colli Euganei.
+            Due appartamenti immerse tra gli ulivi, con vista sui Colli Euganei.
           </p>
         </header>
 

@@ -1,176 +1,24 @@
 import Image from 'next/image';
 import Link from 'next/link';
-
 import { Footer } from '@/components/Footer';
 import { Nav } from '@/components/Nav';
-import { PostCard } from '@/components/PostCard';
-import { getRooms, getPosts, getSiteSettings } from '@/lib/data';
+import { getRooms, getSiteSettings } from '@/lib/data';
 import { urlFor } from '@/sanity/image';
-import { siteConfig } from '@/lib/site';
-
+import { guides } from '@/lib/guides';
+import { pageMetadata } from '@/lib/seo';
+export const metadata = pageMetadata({ title: 'Soggiorni ad Arquà Petrarca, tra i Colli Euganei', description: 'Villa Casa Mia ad Arquà Petrarca: due appartamenti, yoga e una guida ai Colli Euganei. Scopri borghi, sentieri, sapori e idee per il tuo soggiorno.' });
 export const revalidate = 60;
-
 export default async function HomePage() {
-  const [rooms, posts, settings] = await Promise.all([
-    getRooms(),
-    getPosts(),
-    getSiteSettings(),
-  ]);
-
-  const recentPosts = posts.slice(0, 3);
-
-  return (
-    <>
-      <Nav />
-
-      <main id="main">
-        {/* Hero */}
-        <section className="relative min-h-[85vh] flex items-end">
-          {settings?.heroImage && (
-            <Image
-              src={urlFor(settings.heroImage).width(1920).height(1080).url()}
-              alt="Villa Casa Mia"
-              fill
-              className="object-cover"
-              priority
-              sizes="100vw"
-            />
-          )}
-          <div className="hero-overlay absolute inset-0" aria-hidden />
-          <div className="relative z-10 w-full px-4 pb-16 sm:px-6 max-w-6xl mx-auto">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight">
-              {siteConfig.name}
-            </h1>
-            <p className="text-lg sm:text-xl text-white/90 mt-3 max-w-xl">
-              {settings?.tagline || siteConfig.tagline}
-            </p>
-            <div className="flex gap-3 mt-6">
-              <Link
-                href="/book"
-                className="rounded-lg bg-green-700 text-white font-medium px-6 py-3 hover:bg-green-800 transition-colors"
-              >
-                Prenota ora
-              </Link>
-              <Link
-                href="/rooms"
-                className="rounded-lg bg-white/20 backdrop-blur text-white font-medium px-6 py-3 hover:bg-white/30 transition-colors"
-              >
-                Le camere
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* Intro */}
-        <section className="py-16 sm:py-20 px-4 sm:px-6 max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl sm:text-3xl font-semibold text-stone-800">
-            Benvenuti a Casa Mia
-          </h2>
-          <p className="text-stone-500 mt-4 text-lg leading-relaxed max-w-2xl mx-auto">
-            {settings?.description || siteConfig.description}
-          </p>
-          <Link
-            href="/story"
-            className="inline-block mt-6 text-green-700 font-medium hover:text-green-800"
-          >
-            Scopri la nostra storia &rarr;
-          </Link>
-        </section>
-
-        {/* Rooms preview */}
-        {rooms.length > 0 && (
-          <section className="py-16 bg-white px-4 sm:px-6">
-            <div className="max-w-6xl mx-auto">
-              <h2 className="text-2xl sm:text-3xl font-semibold text-stone-800 text-center mb-10">
-                Le nostre camere
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {rooms.map((room) => (
-                  <Link
-                    key={room._id}
-                    href={`/rooms/${room.slug.current}`}
-                    className="group rounded-xl overflow-hidden border border-stone-200 hover:shadow-lg transition-shadow"
-                  >
-                    {room.mainImage && (
-                      <div className="relative aspect-[16/10] overflow-hidden">
-                        <Image
-                          src={urlFor(room.mainImage).width(600).height(375).url()}
-                          alt={room.name}
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-300"
-                          sizes="(max-width: 768px) 100vw, 50vw"
-                        />
-                      </div>
-                    )}
-                    <div className="p-5">
-                      <h3 className="text-lg font-semibold text-stone-800 group-hover:text-green-700 transition-colors">
-                        {room.name}
-                      </h3>
-                      {room.tagline && (
-                        <p className="text-sm text-stone-500 mt-1">{room.tagline}</p>
-                      )}
-                      <div className="flex items-center justify-between mt-3">
-                        <span className="text-green-700 font-semibold">
-                          &euro;{room.pricePerNight}
-                          <span className="text-sm text-stone-400 font-normal"> / notte</span>
-                        </span>
-                        <span className="text-sm text-stone-400">
-                          max {room.maxGuests} ospiti
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* Direct booking value prop */}
-        <section className="py-16 px-4 sm:px-6 bg-green-50">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-2xl sm:text-3xl font-semibold text-stone-800">
-              Prenota direttamente e risparmia
-            </h2>
-            <p className="text-stone-600 mt-4 text-lg leading-relaxed max-w-2xl mx-auto">
-              Prenotando dal nostro sito risparmi il 5% rispetto ad Airbnb e Booking.com.
-              Stesso servizio, prezzo migliore, contatto diretto con noi.
-            </p>
-            <Link
-              href="/book"
-              className="inline-block mt-6 rounded-lg bg-green-700 text-white font-medium px-6 py-3 hover:bg-green-800 transition-colors"
-            >
-              Verifica disponibilità
-            </Link>
-          </div>
-        </section>
-
-        {/* Blog preview */}
-        {recentPosts.length > 0 && (
-          <section className="py-16 px-4 sm:px-6 bg-white">
-            <div className="max-w-6xl mx-auto">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-2xl sm:text-3xl font-semibold text-stone-800">
-                  Dal blog
-                </h2>
-                <Link
-                  href="/blog"
-                  className="text-green-700 text-sm font-medium hover:text-green-800"
-                >
-                  Tutti gli articoli &rarr;
-                </Link>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {recentPosts.map((post) => (
-                  <PostCard key={post._id} post={post} showExcerpt />
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-      </main>
-
-      <Footer />
-    </>
-  );
+  const [rooms, settings] = await Promise.all([getRooms(), getSiteSettings()]);
+  return <><Nav /><main id="main">
+    <section className="villa-hero">
+      {settings?.heroImage ? <Image src={urlFor(settings.heroImage).width(2000).height(1300).url()} alt="Villa Casa Mia ad Arquà Petrarca" fill priority sizes="100vw" className="object-cover" /> : <div className="landscape-art" aria-hidden="true"><span/><span/><span/></div>}
+      <div className="villa-hero-shade"/><div className="hero-copy wrap"><p className="eyebrow">Una casa. Un borgo. Un altro ritmo.</p><h1>Il lusso di<br/>sentirsi <em>a casa.</em></h1><p>Due appartamenti ad Arquà Petrarca.<br/>I Colli Euganei, tutti da vivere.</p><div className="hero-actions"><Link className="button button-light" href="/rooms">Scopri gli appartamenti <span>↗</span></Link><Link className="text-link" href="/explore">Esplora i dintorni ↓</Link></div></div><div className="hero-caption">45°16′ N · 11°43′ E <span>Arquà Petrarca, Veneto</span></div>
+    </section>
+    <section className="intro-section wrap"><p className="eyebrow">Benvenuti a Villa Casa Mia</p><div className="intro-grid"><h2>Lascia fuori la fretta.<br/><em>Il resto è qui.</em></h2><div><p>Ci sono luoghi che invitano a fare meno e a sentire di più. Una passeggiata tra gli ulivi, le vie di un borgo medievale, il tempo per stare insieme.</p><p>La nostra casa ad Arquà Petrarca è un punto di partenza per scoprire i Colli Euganei. O semplicemente per fermarsi un po’.</p><Link className="under-link" href="/story">La nostra storia ↗</Link></div></div></section>
+    <section className="stay-section"><div className="wrap"><div className="section-heading"><div><p className="eyebrow">Il tuo soggiorno</p><h2>Spazio per <em>stare bene.</em></h2></div><Link className="under-link" href="/rooms">Gli appartamenti ↗</Link></div>{rooms.length ? <div className="stay-grid">{rooms.map((room,i)=><Link className="stay-card" key={room._id} href={`/rooms/${room.slug.current}`}><div className="stay-image">{room.mainImage ? <Image src={urlFor(room.mainImage).width(900).height(650).url()} alt={room.name} fill sizes="(max-width: 700px) 100vw, 50vw" className="object-cover"/> : <div className="room-placeholder"><span>Villa Casa Mia</span></div>}<span className="image-number">0{i+1}</span></div><div className="stay-caption"><div><h3>{room.name}</h3><p>{room.tagline || 'Il tuo angolo di quiete ad Arquà Petrarca'}</p></div><span>↗</span></div></Link>)}</div> : <div className="stay-empty"><p>Due appartamenti. Un’accoglienza personale.</p><Link href="/book" className="under-link">Parliamo del tuo soggiorno ↗</Link></div>}</div></section>
+    <section className="territory-section wrap"><div className="section-heading"><div><p className="eyebrow">Fuori dalla porta</p><h2>Un piccolo mondo.<br/><em>Molto da scoprire.</em></h2></div><p className="section-aside">Borghi da attraversare senza fretta, sentieri tra gli ulivi, una giornata alle terme. Il nostro territorio, un’idea alla volta.</p></div><div className="guide-grid">{guides.slice(0,3).map((g,i)=><Link className={`guide-tile guide-tone-${i}`} href={`/explore/${g.slug}`} key={g.slug}><span className="guide-index">0{i+1} / {g.category}</span><div><h3>{g.title}</h3><p>{g.short}</p><span className="round-arrow">↗</span></div></Link>)}</div><Link className="under-link" href="/explore">Tutte le idee per esplorare i Colli Euganei ↗</Link></section>
+    <section className="yoga-band"><div className="wrap yoga-grid"><div className="yoga-symbol" aria-hidden="true">✳</div><div><p className="eyebrow">Un tempo per te</p><h2>Respira.<br/><em>Sei nel posto giusto.</em></h2><p>La pratica dello yoga fa parte della vita di casa. Scopri lo studio e contattaci per conoscere le possibilità di pratica durante il tuo soggiorno.</p><Link href="/yoga" className="under-link">Lo studio yoga ↗</Link></div></div></section>
+    <section className="closing-section wrap"><p className="eyebrow">Ci vediamo ad Arquà</p><h2>Le cose belle<br/>hanno un <em>ritmo diverso.</em></h2><Link className="button" href="/book">Organizza il tuo soggiorno ↗</Link></section>
+  </main><Footer/></>;
 }

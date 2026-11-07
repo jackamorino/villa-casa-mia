@@ -8,6 +8,7 @@ import { siteConfig, SITE_URL } from '@/lib/site';
 import './globals.css';
 
 export const metadata: Metadata = {
+  icons: { icon: '/branding/villa-casa-mia-mark.svg', apple: '/branding/villa-casa-mia-logo.png' },
   metadataBase: new URL(SITE_URL),
   title: {
     default: siteConfig.title,
@@ -19,8 +20,8 @@ export const metadata: Metadata = {
     'Villa Casa Mia',
     'Arquà Petrarca',
     'Colli Euganei',
-    'bed and breakfast',
-    'agriturismo Veneto',
+    'appartamenti Arquà Petrarca',
+    'cosa fare Colli Euganei',
     'yoga retreat Italia',
     'vacanza colline',
     'prenotazione diretta',
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#15803d',
+  themeColor: '#405747',
 };
 
 export default function RootLayout({

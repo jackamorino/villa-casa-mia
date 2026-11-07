@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 
-import { navLinks, ctaLink, siteConfig } from '@/lib/site';
+import { Logo } from './Logo';
+import { navLinks, ctaLink } from '@/lib/site';
 
 export function Nav({ solid = false }: { solid?: boolean }) {
   const pathname = usePathname();
@@ -13,13 +14,13 @@ export function Nav({ solid = false }: { solid?: boolean }) {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-colors ${
-        solid ? 'bg-white shadow-sm' : 'bg-transparent'
+        solid ? 'villa-nav nav-solid' : 'villa-nav nav-over-hero'
       }`}
       aria-label="Primary"
     >
       <div className="mx-auto max-w-6xl flex items-center justify-between px-4 py-3 sm:px-6">
         <Link href="/" className="text-lg font-semibold tracking-wide">
-          {siteConfig.wordmark}
+          <Logo compact />
         </Link>
 
         {/* Desktop links */}

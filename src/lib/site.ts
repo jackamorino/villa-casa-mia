@@ -12,7 +12,7 @@ export const siteConfig = {
   title: 'Villa Casa Mia — Arquà Petrarca',
   tagline: 'La tua casa sui Colli Euganei',
   description:
-    'Villa Casa Mia: soggiorna tra gli ulivi dei Colli Euganei ad Arquà Petrarca. Due camere esclusive, studio yoga e la storia di una villa rinata.',
+    'Villa Casa Mia: soggiorna tra gli ulivi dei Colli Euganei ad Arquà Petrarca. Due appartamenti, studio yoga e la storia di una villa rinata.',
   author: {
     name: 'Villa Casa Mia',
     email: 'info@villacasamiaitalia.com',
@@ -30,7 +30,8 @@ export const siteConfig = {
 } as const;
 
 export const navLinks: { href: string; label: string }[] = [
-  { href: '/rooms', label: 'Camere' },
+  { href: '/rooms', label: 'Appartamenti' },
+  { href: '/explore', label: 'I dintorni' },
   { href: '/story', label: 'La Storia' },
   { href: '/yoga', label: 'Yoga' },
   { href: '/blog', label: 'Blog' },

@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
 
 import { getPostSlugs, getRoomSlugs } from '@/lib/data';
+import { guides } from '@/lib/guides';
 import { SITE_URL } from '@/lib/site';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -30,5 +31,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  return [...staticPages, ...roomPages, ...postPages];
+  return [...staticPages, { url: `${SITE_URL}/explore`, changeFrequency: 'monthly' as const, priority: 0.8 }, ...guides.map(g => ({ url: `${SITE_URL}/explore/${g.slug}`, changeFrequency: 'monthly' as const, priority: 0.7 })), ...roomPages, ...postPages];
 }

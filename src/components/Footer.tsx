@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+import { Logo } from './Logo';
 import { siteConfig } from '@/lib/site';
 
 export function Footer() {
@@ -9,7 +10,7 @@ export function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
           {/* Brand */}
           <div>
-            <p className="font-semibold text-stone-800 mb-2">{siteConfig.name}</p>
+            <Logo />
             <p className="text-sm text-stone-500 leading-relaxed">
               {siteConfig.location.name}, {siteConfig.location.region}
               <br />
@@ -22,8 +23,9 @@ export function Footer() {
             <p className="text-sm font-medium text-stone-700 mb-2">Esplora</p>
             <div className="flex flex-col gap-1.5">
               <Link href="/rooms" className="text-sm text-stone-500 hover:text-green-700">
-                Camere
+                Appartamenti
               </Link>
+              <Link href="/explore" className="text-sm text-stone-500 hover:text-green-700">I dintorni</Link>
               <Link href="/story" className="text-sm text-stone-500 hover:text-green-700">
                 La Storia
               </Link>
